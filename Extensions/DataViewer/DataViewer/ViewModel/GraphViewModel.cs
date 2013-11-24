@@ -15,7 +15,6 @@ namespace Company.DataViewer.ViewModel
 
         private bool _pauseButtonEnable;
         private bool _runButtonEnable;
-        private int _i = 0;
 
         public GraphViewModel( string breakPointId, Action<GraphViewModel> removeAction)
         {

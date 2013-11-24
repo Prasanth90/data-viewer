@@ -33,6 +33,7 @@ namespace Company.DataViewer
                     child.SymbolSize = new Size(6, 6);
                     child.SymbolFill = Brushes.Yellow;
                     child.SymbolMarker = Marker.Dot;
+                    child.ConnectionFill = Brushes.Crimson;
                 }
 
                 if (c1Chart.Actions.Count == 0)

@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using Atmel.Studio.Services;
 using Atmel.Studio.Services.Device;
+using Company.DataViewer.Options;
 using EnvDTE;
 using Microsoft.Win32;
 using Microsoft.VisualStudio;
@@ -35,6 +36,7 @@ namespace Company.DataViewer
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideOptionPage(typeof(DataViewerOptionsPage), "Extensions", "Data Viewer",0, 0, true)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
     [Guid(GuidList.guidDataViewerPkgString)]

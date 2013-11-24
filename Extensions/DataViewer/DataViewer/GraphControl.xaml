@@ -28,7 +28,7 @@
                                 <c1:ChartData ItemsSource="{Binding Results}">
 
                                 <c1:XYDataSeries  PlotElementLoaded="DataSeries_OnPlotElementLoaded"  ValueBinding="{Binding Path=KeyValuePair.Value}"  XValueBinding="{Binding Path=KeyValuePair.Key}" 
-									       Label="Plot" RenderMode="Default" ConnectionFill="Crimson" />
+									       Label="Plot" RenderMode="Default" />
 
                                 </c1:ChartData>
                             </c1:C1Chart.Data>

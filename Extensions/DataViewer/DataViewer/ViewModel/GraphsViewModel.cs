@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using Atmel.Studio.Services;
 using Atmel.Studio.Services.Device;
-using EnvDTE;
 using Fdk.Ui.ViewModelUtils;
 using Microsoft.VisualStudio.Shell;
 
@@ -13,10 +12,8 @@ namespace Company.DataViewer.ViewModel
     public class GraphsViewModel : ViewModelBase<GraphsViewModel>
     {
         private ObservableCollection<GraphViewModel> _graphItems;
-        private DebuggerEvents _debuggerEvents;
         private IDataBreakpointService _service;
         private ITargetService2 _targetService2;
-        private DTE _dte;
         private List<IDataBreakpoint> _breakpoints;
         private ITarget2 _target;
 
@@ -76,8 +73,7 @@ namespace Company.DataViewer.ViewModel
                 _service.BreakpointsAdded += new EventHandler<BreakpointsChangedEventArgs>(_service_BreakpointsAdded);
                 _service.BreakpointsRemoved += new EventHandler<BreakpointsChangedEventArgs>(_service_BreakpointsRemoved);
                 _service.BreakpointsChanged += new EventHandler<BreakpointsChangedEventArgs>(_service_BreakpointsChanged);
-                _service.EnterDataBreakpointBreakMode +=
-                    new EventHandler<DataBreakpointBreakEventArgs>(_service_EnterDataBreakpointBreakMode);
+                _service.EnterDataBreakpointBreakMode +=new EventHandler<DataBreakpointBreakEventArgs>(_service_EnterDataBreakpointBreakMode);
                 _service.EnterDataBreakpointTriggerMode += new EventHandler<DataBreakpointTriggerEventArgs>(_service_EnterDataBreakpointTriggerMode);
                 if (_breakpoints.Count > 0)
                 {
