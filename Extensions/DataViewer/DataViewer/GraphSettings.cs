@@ -22,7 +22,10 @@ namespace Company.DataViewer
 
         private static void Update(DataViewerOptionsPage dataViewerOptionsPage)
         {
-            MaxXValue = Convert.ToInt32(dataViewerOptionsPage.XAxisLimit);
+            if (!string.IsNullOrEmpty(dataViewerOptionsPage.XAxisLimit))
+            {
+                MaxXValue = Convert.ToInt32(dataViewerOptionsPage.XAxisLimit);
+            }
             MarkerColour = dataViewerOptionsPage.MarkerColour;
             MarkerSymbol = dataViewerOptionsPage.MarkerSymbol;
             LineColour = dataViewerOptionsPage.LineColour;
