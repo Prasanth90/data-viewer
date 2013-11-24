@@ -79,15 +79,6 @@ namespace Company.DataViewer.ViewModel
                 _service.EnterDataBreakpointBreakMode +=
                     new EventHandler<DataBreakpointBreakEventArgs>(_service_EnterDataBreakpointBreakMode);
                 _service.EnterDataBreakpointTriggerMode += new EventHandler<DataBreakpointTriggerEventArgs>(_service_EnterDataBreakpointTriggerMode);
-                _dte = Package.GetGlobalService(typeof (EnvDTE.DTE)) as EnvDTE.DTE;
-                if (_dte != null)
-                {
-                    this._debuggerEvents = _dte.Events.DebuggerEvents;
-                    if (this._debuggerEvents != null)
-                    {
-                        this._debuggerEvents.OnEnterBreakMode += debuggerEvents_OnEnterBreakMode;
-                    }
-                }
                 if (_breakpoints.Count > 0)
                 {
                     foreach (var dataBreakpoint in _breakpoints)
@@ -115,23 +106,40 @@ namespace Company.DataViewer.ViewModel
 
         void _service_EnterDataBreakpointTriggerMode(object sender, DataBreakpointTriggerEventArgs e)
         {
+            UpdateGraphs();
+        }
+
+        private void UpdateGraphs()
+        {
             _target = _targetService2.GetLaunchedTarget();
             //IAddressSpace addressSpace = _target.Device.GetAddressSpace(MemoryTypes.Data);
-            if (e.DataBreakpointInfo.State == DataBreakpointState.Bound)
+            foreach (var graphViewModel in GraphItems)
             {
-                var str = e.DataBreakpointInfo.Address;
-                str = str.Replace("0x", "");
-                ulong t = ulong.Parse(str, NumberStyles.HexNumber);
-                MemoryErrorRange[] memoryErrorRange;
-                var value = _target.GetMemory(_target.GetAddressSpaceName(MemoryTypes.Data), t, 1, 1, 0,
-                                              out memoryErrorRange);
-                foreach (var graphViewModel in GraphItems)
+                try
                 {
-                    if (graphViewModel.BreakPointId.Equals(e.DataBreakpointInfo.Id))
+                    var breakpointInfo = _service.GetDataBreakpoint(graphViewModel.BreakPointId);
+                    if (breakpointInfo.State == DataBreakpointState.Bound)
                     {
-                        graphViewModel.AddPoint(value[0]);
+                        var str = breakpointInfo.Address;
+                        var byteCount = Convert.ToInt32(breakpointInfo.Config.ByteCount);
+                        var addressSpace = _target.GetAddressSpaceName(MemoryTypes.Data);
+                        str = str.Replace("0x", "");
+                        ulong startAddress = ulong.Parse(str, NumberStyles.HexNumber);
+                        MemoryErrorRange[] memoryErrorRange;
+                        var value = _target.GetMemory(addressSpace, startAddress, 1, byteCount, 0,
+                                                        out memoryErrorRange);
+                        if (value != null)
+                        {
+                            graphViewModel.AddPoint(value[0]);
+                        }
                     }
                 }
+                catch
+                {
+                    // TODO:  Log messages somewhere and continue
+                    continue;
+                }
+               
             }
         }
 
@@ -163,28 +171,7 @@ namespace Company.DataViewer.ViewModel
 
         void _service_EnterDataBreakpointBreakMode(object sender, DataBreakpointBreakEventArgs e)
         {
-                    _target = _targetService2.GetLaunchedTarget();
-                    //IAddressSpace addressSpace = _target.Device.GetAddressSpace(MemoryTypes.Data);
-                    if (e.DataBreakpointInfo.State == DataBreakpointState.Bound)
-                    {
-                        var str = e.DataBreakpointInfo.Address;
-                        str = str.Replace("0x", "");
-                        ulong t = ulong.Parse(str, NumberStyles.HexNumber);
-                        MemoryErrorRange[] memoryErrorRange;
-                        var value = _target.GetMemory(_target.GetAddressSpaceName(MemoryTypes.Data), t, 1, 1, 0,
-                                                      out memoryErrorRange);
-                        foreach (var graphViewModel in GraphItems)
-                        {
-                            if (graphViewModel.BreakPointId.Equals(e.DataBreakpointInfo.Id))
-                            {
-                                graphViewModel.AddPoint(value[0]);
-                            }
-                        }
-                    }
-        }
-
-        void debuggerEvents_OnEnterBreakMode(dbgEventReason Reason, ref dbgExecutionAction ExecutionAction)
-        {
+            UpdateGraphs();
         }
     }
 }
