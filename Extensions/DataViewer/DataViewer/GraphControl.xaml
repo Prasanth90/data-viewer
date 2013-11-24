@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="Company.DataViewer.GraphControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:c1="clr-namespace:C1.WPF.C1Chart;assembly=C1.WPF.C1Chart.4"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="350">
+    <UserControl.Resources>
+        
+        <DataTemplate x:Key="ListViewItem">
+            <Border x:Name="MyBorder" Background="White" HorizontalAlignment="Stretch" Margin="5" >
+                <DockPanel Margin="2" Background="White">
+                    <StackPanel  Margin="2" Height="28"  HorizontalAlignment="Stretch" Orientation="Horizontal" Background="White" DockPanel.Dock="Top" >
+                        <Button BorderBrush="White" IsEnabled="{Binding Path=PauseButtonEnable, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=PauseButtonClick,UpdateSourceTrigger=PropertyChanged}"  Margin="4,0,0,0" >
+                            <Image Source="Resources\pause.png"/>
+                        </Button>
+                        <Button BorderBrush="White" Margin="4,0,0,0"  IsEnabled="{Binding Path=RunButtonEnable, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=RunButtonClick,UpdateSourceTrigger=PropertyChanged}">
+                            <Image Source="Resources\Play.png"/>
+                        </Button >
+                        <Button BorderBrush="White" Command="{Binding Path=CloseButtonClick,UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0">
+                            <Image Source="Resources\close.png"/>
+                        </Button>
+                    </StackPanel>
+                    <DockPanel >
+                        <c1:C1Chart   HorizontalAlignment="Stretch"  Loaded="FrameworkElement_OnLoaded" VerticalAlignment="Bottom" ChartType="LineSymbols"  MinHeight="250"  BorderThickness="0" MinWidth="500" >
+                            <c1:C1Chart.Data>
+                                <c1:ChartData ItemsSource="{Binding Results}">
+
+                                <c1:XYDataSeries  PlotElementLoaded="DataSeries_OnPlotElementLoaded"  ValueBinding="{Binding Path=KeyValuePair.Value}"  XValueBinding="{Binding Path=KeyValuePair.Key}" 
+									       Label="Plot" RenderMode="Default" ConnectionFill="Crimson" />
+
+                                </c1:ChartData>
+                            </c1:C1Chart.Data>
+                            <c1:C1ChartLegend DockPanel.Dock="Top" />
+                        </c1:C1Chart>
+                    </DockPanel>
+                </DockPanel>
+            </Border>
+        </DataTemplate>
+        <Style x:Key="MyListViewStyle" TargetType="ListView">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="White"/>
+
+            </Style.Resources>
+
+        </Style>
+    </UserControl.Resources>
+
+    <Grid >
+            <ListView HorizontalContentAlignment="Stretch" DockPanel.Dock="Top" Style="{StaticResource MyListViewStyle}"   ItemsSource="{Binding GraphItems}" BorderBrush="White" ItemTemplate="{StaticResource ListViewItem}" >
+            </ListView>
+    </Grid>
+</UserControl>
