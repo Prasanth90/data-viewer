@@ -39,6 +39,7 @@ namespace Company.DataViewer
     [ProvideOptionPage(typeof(DataViewerOptionsPage), "Extensions", "Data Viewer",0, 0, true)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
+    [ProvideAutoLoad(UIContextGuids.NoSolution)]
     [Guid(GuidList.guidDataViewerPkgString)]
     public sealed class DataViewerPackage : Package
     {
@@ -93,6 +94,8 @@ namespace Company.DataViewer
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if ( null != mcs )
             {
+                var optionsPage = GetOptionsPage();
+                GraphSettings.ApplySettings(optionsPage);
                 GraphSettings.MaxXValue = 20;
                 // Create the command for the menu item.
                 CommandID menuCommandID = new CommandID(GuidList.guidDataViewerCmdSet, (int)PkgCmdIDList.DatViewCommand);
@@ -104,6 +107,8 @@ namespace Company.DataViewer
                 mcs.AddCommand( menuToolWin );
             }
         }
+
+
         #endregion
 
 
@@ -125,6 +130,13 @@ namespace Company.DataViewer
         /// </summary>
         private void MenuItemCallback(object sender, EventArgs e)
         {
+        }
+
+        private DataViewerOptionsPage GetOptionsPage()
+        {
+            var dataviewerOptionsPage = (DataViewerOptionsPage)GetDialogPage(typeof(DataViewerOptionsPage));
+            if (dataviewerOptionsPage == null) return null;
+            return dataviewerOptionsPage;
         }
 
     }

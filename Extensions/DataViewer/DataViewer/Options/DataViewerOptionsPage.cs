@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace Company.DataViewer.Options
 {
+
     [Guid("D2AE3A81-79E5-4D1D-B6DC-29CA310A8792")]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [CLSCompliant(false), ComVisible(true)]
@@ -67,6 +68,7 @@ namespace Company.DataViewer.Options
 
         public override void SaveSettingsToStorage()
         {
+            GraphSettings.ApplySettings(this);
             base.SaveSettingsToStorage();
         }
 
@@ -79,6 +81,21 @@ namespace Company.DataViewer.Options
         {
             SaveSettingsToStorage();
             base.OnApply(e);
+        }
+
+    }
+
+    public delegate void DataViewerOptionsChangedHandler(object sender, DataViewerOptionsChangedArgs e);
+
+   
+
+    public class DataViewerOptionsChangedArgs : EventArgs
+    {
+        public DataViewerOptionsPage DataViewerOptions;
+
+        public DataViewerOptionsChangedArgs(DataViewerOptionsPage options)
+        {
+            DataViewerOptions = options;
         }
     }
 }
