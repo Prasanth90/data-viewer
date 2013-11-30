@@ -31,9 +31,9 @@ namespace Company.DataViewer
                 foreach (var child in c1Chart.Data.Children)
                 {
                     child.SymbolSize = new Size(6, 6);
-                    child.SymbolFill = Brushes.Yellow;
-                    child.SymbolMarker = Marker.Dot;
-                    child.ConnectionFill = Brushes.Crimson;
+            //        child.SymbolFill = GraphSettings.MarkerColour;
+              //      child.SymbolMarker = GraphSettings.MarkerSymbol;
+                //    child.ConnectionFill = GraphSettings.LineColour;
                 }
 
                 if (c1Chart.Actions.Count == 0)
@@ -65,8 +65,8 @@ namespace Company.DataViewer
                         Foreground = Brushes.DarkBlue,
                         FontWeight = FontWeights.Bold,
                     };
-                c1Chart.View.AxisX.Min = 0;         
-                c1Chart.View.AxisX.Max = GraphSettings.MaxXValue;
+                c1Chart.View.AxisX.Min = 0;
+                c1Chart.View.AxisX.Max = Settings.GraphSettings.MaxXValue;
                 c1Chart.View.AxisX.MinScale = 0.00001;
                 c1Chart.View.AxisY.MinScale = 0.00001;
                 //c1Chart.View.AxisY.Min = 0;

@@ -4,6 +4,10 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using Atmel.Studio.Services;
 using Atmel.Studio.Services.Device;
+using Atmel.VsIde.AvrStudio.Services.TargetService;
+using Atmel.VsIde.AvrStudio.Services.TargetService.TCF.Internal.Services.Remote;
+using Atmel.VsIde.AvrStudio.Services.TargetService.TCF.Services;
+using Company.DataViewer.ExpressionEvaluator;
 using Fdk.Ui.ViewModelUtils;
 using Microsoft.VisualStudio.Shell;
 
@@ -14,14 +18,30 @@ namespace Company.DataViewer.ViewModel
         private ObservableCollection<GraphViewModel> _graphItems;
         private IDataBreakpointService _service;
         private ITargetService2 _targetService2;
+        private ITargetService _targetService;
         private List<IDataBreakpoint> _breakpoints;
         private ITarget2 _target;
+        private ExpressionEvaluator.ExpressionEvaluationWrapper _expressionEvaluationWrapper;
+        private EnvDTE.DTE _dte;
 
         public GraphsViewModel()
         {
+            Settings.GraphSettings.OptionsChanged += new EventHandler(settings_OptionsChanged);
             GraphItems = new ObservableCollection<GraphViewModel>();
             _breakpoints = new List<IDataBreakpoint>();
+            _dte = Package.GetGlobalService(typeof (EnvDTE.DTE)) as EnvDTE.DTE;
+            _expressionEvaluationWrapper = new ExpressionEvaluationWrapper();
             Subscribe();
+        }
+
+        void settings_OptionsChanged(object sender, EventArgs e)
+        {
+            foreach (var graphViewModel in GraphItems)
+            {
+                graphViewModel.SymbolFill = Settings.GraphSettings.MarkerColour;
+                graphViewModel.SymbolMarker = Settings.GraphSettings.MarkerSymbol;
+                graphViewModel.ConnectionFill = Settings.GraphSettings.LineColour;
+            }
         }
         public ObservableCollection<GraphViewModel> GraphItems
         {
@@ -66,6 +86,7 @@ namespace Company.DataViewer.ViewModel
         private void Subscribe()
         {
             _targetService2 = ATServiceProvider.TargetService2;
+            _targetService = ATServiceProvider.TargetService2 as ITargetService;
             _service = ATServiceProvider.DataBreakpointService;
             if (_service != null)
             {
@@ -116,18 +137,25 @@ namespace Company.DataViewer.ViewModel
                     var breakpointInfo = _service.GetDataBreakpoint(graphViewModel.BreakPointId);
                     if (breakpointInfo.State == DataBreakpointState.Bound)
                     {
+                        double plotValue = 0;
                         var str = breakpointInfo.Address;
                         var byteCount = Convert.ToInt32(breakpointInfo.Config.ByteCount);
-                        var addressSpace = _target.GetAddressSpaceName(MemoryTypes.Data);
                         str = str.Replace("0x", "");
                         ulong startAddress = ulong.Parse(str, NumberStyles.HexNumber);
-                        MemoryErrorRange[] memoryErrorRange;
-                        var value = _target.GetMemory(addressSpace, startAddress, 1, byteCount, 0,
-                                                        out memoryErrorRange);
-                        if (value != null)
+                        var location = breakpointInfo.Config.Location;
+                        if (location.Contains("&") && IsValidVariable(location) && startAddress != 0 & location!=breakpointInfo.Address)
                         {
-                            graphViewModel.AddPoint(value[0]);
+                            var variable = breakpointInfo.Config.Location.Replace("&", "");
+                            var value1 = _expressionEvaluationWrapper.GetVaraibleValue(variable);
+                            plotValue = Convert.ToDouble(value1);
+                            
                         }
+                        else
+                        {
+                            var value = _expressionEvaluationWrapper.GetValueAtAddress(startAddress, byteCount);
+                            plotValue = value[0];
+                        }
+                        graphViewModel.AddPoint(plotValue);
                     }
                 }
                 catch
@@ -138,6 +166,41 @@ namespace Company.DataViewer.ViewModel
                
             }
         }
+
+        private bool IsValidVariable(string location)
+        {
+            var list = new List<string>()
+                {
+                    "+",
+                    "-",
+                    "*",
+                    "/",
+                    "<",
+                    ">",
+                    "%",
+                    "!",
+                    "?",
+                    "|",
+                };
+
+            var nos = new List<string>() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+            foreach (var no in nos)
+            {
+                if (location.StartsWith(no))
+                {
+                    return false;
+                }
+            }
+            foreach (var VARIABLE in list)
+            {
+                if (location.Contains(VARIABLE))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
 
         void _service_BreakpointsChanged(object sender, BreakpointsChangedEventArgs e)
         {

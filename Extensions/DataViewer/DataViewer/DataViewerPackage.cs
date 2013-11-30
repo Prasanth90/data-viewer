@@ -95,8 +95,9 @@ namespace Company.DataViewer
             if ( null != mcs )
             {
                 var optionsPage = GetOptionsPage();
-                GraphSettings.ApplySettings(optionsPage);
-                GraphSettings.MaxXValue = 20;
+                var graphSettings = new GraphSettings();
+                Settings.GraphSettings = graphSettings;
+                Settings.GraphSettings.ApplySettings(optionsPage);
                 // Create the command for the menu item.
                 CommandID menuCommandID = new CommandID(GuidList.guidDataViewerCmdSet, (int)PkgCmdIDList.DatViewCommand);
                 MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );

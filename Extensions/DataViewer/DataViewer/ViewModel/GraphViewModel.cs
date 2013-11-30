@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using C1.WPF.C1Chart;
 using Fdk.Ui.ViewModelUtils;
 
 namespace Company.DataViewer.ViewModel
@@ -15,6 +17,9 @@ namespace Company.DataViewer.ViewModel
 
         private bool _pauseButtonEnable;
         private bool _runButtonEnable;
+        private Brush _symbolFill;
+        private Marker _symbolMarker;
+        private Brush _connectionFill;
 
         public GraphViewModel( string breakPointId, Action<GraphViewModel> removeAction)
         {
@@ -22,10 +27,45 @@ namespace Company.DataViewer.ViewModel
             _removeAction = removeAction;
             PauseButtonEnable = false;
             RunButtonEnable = true;
+            SymbolFill = Settings.GraphSettings.MarkerColour;
+            SymbolMarker = Settings.GraphSettings.MarkerSymbol;
+            ConnectionFill = Settings.GraphSettings.LineColour;
             PauseButtonClick = new RelayCommand<EventArgs>(PauseButtonClickHandler);
             RunButtonClick = new RelayCommand<EventArgs>(RunButtonClickHandler);
             CloseButtonClick = new RelayCommand<EventArgs>(CloseButtonClickHandler);
             Results = new ObservableCollection<Result>();
+        }
+
+
+
+        public Brush SymbolFill
+        {
+            get { return _symbolFill; }
+            set
+            {
+                _symbolFill = value;
+                this.OnPropertyChanged("SymbolFill");
+            }
+        }
+
+        public Brush ConnectionFill
+        {
+            get { return _connectionFill; }
+            set
+            {
+                _connectionFill = value;
+                this.OnPropertyChanged("ConnectionFill");
+            }
+        }
+
+        public Marker SymbolMarker
+        {
+            get { return _symbolMarker; }
+            set
+            {
+                _symbolMarker = value;
+                this.OnPropertyChanged("SymbolMarker");
+            }
         }
 
         public event ClickEventHandler PauseClicked;
@@ -93,25 +133,25 @@ namespace Company.DataViewer.ViewModel
             }
         }
 
-        public void AddPoint(int value)
+        public void AddPoint(double value)
         {
-            if(Results.Count <=GraphSettings.MaxXValue-1)
-            Results.Add(new Result( new KeyValuePair<int, int>(Results.Count()+1,value)));
+            if (Results.Count <= Settings.GraphSettings.MaxXValue - 1)
+            Results.Add(new Result( new KeyValuePair<int, double>(Results.Count()+1,value)));
             else
             {
                 Shift(value);
             }
         }
 
-        private void Shift(int val)
+        private void Shift(double val)
         {
             var list = Results.Skip(1).Select(result=>result.KeyValuePair.Value).ToList();
             Results.Clear();
             foreach (var value in list)
             {
-                Results.Add(new Result(new KeyValuePair<int, int>(Results.Count() + 1, value)));
+                Results.Add(new Result(new KeyValuePair<int, double>(Results.Count() + 1, value)));
             }
-            Results.Add(new Result(new KeyValuePair<int, int>(Results.Count() + 1, val)));
+            Results.Add(new Result(new KeyValuePair<int, double>(Results.Count() + 1, val)));
         }
     }
 
@@ -127,11 +167,15 @@ namespace Company.DataViewer.ViewModel
 
     public class Result 
     {
-        public Result(KeyValuePair<int, int> keyValuePair)
+        public Result(KeyValuePair<int, double> keyValuePair)
         {
             KeyValuePair = keyValuePair;
         }
 
-        public KeyValuePair<int, int> KeyValuePair { get; set; }
+        public KeyValuePair<int, double> KeyValuePair
+        {
+            get;
+            set;
+        }
     }
 }

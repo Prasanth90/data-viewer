@@ -24,10 +24,11 @@
                     </StackPanel>
                     <DockPanel >
                         <c1:C1Chart   HorizontalAlignment="Stretch"  Loaded="FrameworkElement_OnLoaded" VerticalAlignment="Bottom" ChartType="LineSymbols"  MinHeight="250"  BorderThickness="0" MinWidth="500" >
+                            
                             <c1:C1Chart.Data>
-                                <c1:ChartData ItemsSource="{Binding Results}">
+                                <c1:ChartData  ItemsSource="{Binding Results}">
 
-                                <c1:XYDataSeries  PlotElementLoaded="DataSeries_OnPlotElementLoaded"  ValueBinding="{Binding Path=KeyValuePair.Value}"  XValueBinding="{Binding Path=KeyValuePair.Key}" 
+                                    <c1:XYDataSeries  SymbolFill="{Binding Path=SymbolFill,UpdateSourceTrigger=PropertyChanged}" SymbolMarker="{Binding Path=SymbolMarker,UpdateSourceTrigger=PropertyChanged}" ConnectionFill="{Binding Path=ConnectionFill,UpdateSourceTrigger=PropertyChanged}"  PlotElementLoaded="DataSeries_OnPlotElementLoaded"  ValueBinding="{Binding Path=KeyValuePair.Value}"  XValueBinding="{Binding Path=KeyValuePair.Key}" 
 									       Label="Plot" RenderMode="Default" />
 
                                 </c1:ChartData>
