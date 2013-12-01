@@ -26,7 +26,6 @@ namespace Company.DataViewer.ViewModel
 
         public GraphsViewModel()
         {
-            Settings.GraphSettings.OptionsChanged += new EventHandler(settings_OptionsChanged);
             GraphItems = new ObservableCollection<GraphViewModel>();
             _breakpoints = new List<IDataBreakpoint>();
             _dte = Package.GetGlobalService(typeof (EnvDTE.DTE)) as EnvDTE.DTE;
@@ -34,15 +33,6 @@ namespace Company.DataViewer.ViewModel
             Subscribe();
         }
 
-        void settings_OptionsChanged(object sender, EventArgs e)
-        {
-            foreach (var graphViewModel in GraphItems)
-            {
-                graphViewModel.SymbolFill = Settings.GraphSettings.MarkerColour;
-                graphViewModel.SymbolMarker = Settings.GraphSettings.MarkerSymbol;
-                graphViewModel.ConnectionFill = Settings.GraphSettings.LineColour;
-            }
-        }
         public ObservableCollection<GraphViewModel> GraphItems
         {
             get

@@ -35,16 +35,13 @@ namespace Company.DataViewer.ViewModel
         private ChartView _chartView = new ChartView();
 
         public GraphViewModel( IDataBreakpoint breakPoint, Action<GraphViewModel> removeAction)
-        {
+        {        
             BreakPoint = breakPoint;
             _removeAction = removeAction;
             PauseButtonEnable = false;
             RunButtonEnable = true;
             GraphTypes = new ObservableCollection<string>() {"Linear", "Digital"};
             Addresses = GetAddresses();
-            SymbolFill = Settings.GraphSettings.MarkerColour;
-            SymbolMarker = Settings.GraphSettings.MarkerSymbol;
-            ConnectionFill = Settings.GraphSettings.LineColour;
             PauseButtonClick = new RelayCommand<EventArgs>(PauseButtonClickHandler);
             RunButtonClick = new RelayCommand<EventArgs>(RunButtonClickHandler);
             CloseButtonClick = new RelayCommand<EventArgs>(CloseButtonClickHandler);
@@ -53,6 +50,17 @@ namespace Company.DataViewer.ViewModel
             DigitalDataSeries = GetDigitalDataSeries();
             SelectedAddress = Addresses.FirstOrDefault();
             SelectedGraphType = GraphTypes.FirstOrDefault();
+            Settings.GraphSettings.OptionsChanged += new EventHandler(settings_OptionsChanged);
+        }
+
+        private void settings_OptionsChanged(object sender, EventArgs e)
+        {
+            if (SelectedGraphType != null && Addresses != null && Results != null)
+            {
+                LinearDataSeries = GetLineardataSeries();
+                DigitalDataSeries = GetDigitalDataSeries();
+                SelectedGraphType = _selectedGraphType;
+            }
         }
 
         private ObservableCollection<string> GetAddresses()
@@ -244,32 +252,17 @@ namespace Company.DataViewer.ViewModel
 
         public Brush SymbolFill
         {
-            get { return _symbolFill; }
-            set
-            {
-                _symbolFill = value;
-                this.OnPropertyChanged("SymbolFill");
-            }
+            get { return Settings.GraphSettings.MarkerColour; }
         }
 
         public Brush ConnectionFill
         {
-            get { return _connectionFill; }
-            set
-            {
-                _connectionFill = value;
-                this.OnPropertyChanged("ConnectionFill");
-            }
+            get { return Settings.GraphSettings.LineColour; }
         }
 
         public Marker SymbolMarker
         {
-            get { return _symbolMarker; }
-            set
-            {
-                _symbolMarker = value;
-                this.OnPropertyChanged("SymbolMarker");
-            }
+            get { return Settings.GraphSettings.MarkerSymbol; }
         }
 
         public event ClickEventHandler PauseClicked;
