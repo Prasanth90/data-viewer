@@ -23,6 +23,10 @@
   <!--Definition of some VSCT specific constants. In this sample we use it for the IDs inside the guidOfficeIcon group. -->
   <Extern href="msobtnid.h"/>
 
+  <Extern href="VSDbgCmd.h"/>
+
+  <Extern href="VsDebugGuids.h"/>
+
 
 
 
@@ -64,18 +68,18 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node or set it to <Icon guid="guidOfficeIcon" id="msotcidNoIcon" /> -->
 
-      <Button guid="guidDataViewerCmdSet" id="DatViewCommand" priority="0x0100" type="Button">
+      <!--<Button guid="guidDataViewerCmdSet" id="DatViewCommand" priority="0x0100" type="Button">
         <Parent guid="guidDataViewerCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
           <CommandName>DatViewCommand</CommandName>
           <ButtonText>DataView</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
 
 
       <Button guid="guidDataViewerCmdSet" id="cmdidMyToolWindow" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+        <Parent guid="guidVSDebugGroup" id="IDG_DEBUG_WINDOWS_GENERAL"/>
         <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
           <CommandName>cmdidMyToolWindow</CommandName>
