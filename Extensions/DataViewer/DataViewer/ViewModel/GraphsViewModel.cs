@@ -157,8 +157,12 @@ namespace Company.DataViewer.ViewModel
                         }
                         else
                         {
-                             bytes = _expressionEvaluationWrapper.GetValueAtAddress(startAddress, byteCount);
-                            linearValue = bytes[0];
+                             bytes = _expressionEvaluationWrapper.GetValueAtAddress(startAddress, 4);
+                             for (int i = byteCount; i < 4; i++)
+                             {
+                                 bytes[i] = 0;
+                             }
+                             linearValue = BitConverter.ToInt32(bytes, 0);
                         }
                         foreach (byte b in bytes)
                         {

@@ -54,7 +54,16 @@ namespace Company.DataViewer.ExpressionEvaluator
 
         private string GetAddressSpace(ITarget2 target2)
         {
-            var addressSpace = target2.GetAddressSpaceName(MemoryTypes.Data);
+           string addressSpace;
+            if (target2.Device.Name.ToLower().Contains("sam"))
+            {
+                addressSpace = target2.GetAddressSpaceName(MemoryTypes.Base);
+            }
+            else
+            {
+                 addressSpace = target2.GetAddressSpaceName(MemoryTypes.Data);  
+            }
+           
             return addressSpace;
         }
 

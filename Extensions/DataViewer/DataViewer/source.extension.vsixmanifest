@@ -4,7 +4,7 @@
     <Name>DataViewer</Name>
     <Author>Company</Author>
     <Version>1.0</Version>
-    <Description xml:space="preserve">Information about my package</Description>
+    <Description xml:space="preserve">Provides way to watch the changes in the variables or Registers in a graphical manner while debugging. Supports bit wise live watch also.</Description>
     <Locale>1033</Locale>
     <InstalledByMsi>false</InstalledByMsi>
     <SupportedProducts>
