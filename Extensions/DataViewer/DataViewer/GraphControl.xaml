@@ -8,6 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="350">
     <UserControl.Resources>
         
+        
         <DataTemplate x:Key="ListViewItem">
             <Border x:Name="MyBorder" Background="White" HorizontalAlignment="Stretch" Margin="5" >
                 <DockPanel Margin="2" Background="White">
@@ -21,18 +22,12 @@
                         <Button BorderBrush="White" Command="{Binding Path=CloseButtonClick,UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0">
                             <Image Source="Resources\close.png"/>
                         </Button>
+                        <ComboBox ItemsSource="{Binding Path=GraphTypes, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedGraphType ,UpdateSourceTrigger=PropertyChanged}" />
+                        <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=Addresses, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedAddress ,UpdateSourceTrigger=PropertyChanged}" />
+                        <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=Bits, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                     <DockPanel >
-                        <c1:C1Chart   HorizontalAlignment="Stretch"  Loaded="FrameworkElement_OnLoaded" VerticalAlignment="Bottom" ChartType="LineSymbols"  MinHeight="250"  BorderThickness="0" MinWidth="500" >
-                            
-                            <c1:C1Chart.Data>
-                                <c1:ChartData  ItemsSource="{Binding Results}">
-
-                                    <c1:XYDataSeries  SymbolFill="{Binding Path=SymbolFill,UpdateSourceTrigger=PropertyChanged}" SymbolMarker="{Binding Path=SymbolMarker,UpdateSourceTrigger=PropertyChanged}" ConnectionFill="{Binding Path=ConnectionFill,UpdateSourceTrigger=PropertyChanged}"  PlotElementLoaded="DataSeries_OnPlotElementLoaded"  ValueBinding="{Binding Path=KeyValuePair.Value}"  XValueBinding="{Binding Path=KeyValuePair.Key}" 
-									       Label="Plot" RenderMode="Default" />
-
-                                </c1:ChartData>
-                            </c1:C1Chart.Data>
+                        <c1:C1Chart   HorizontalAlignment="Stretch" View="{Binding Path=ChartView,UpdateSourceTrigger=PropertyChanged}"  Loaded="FrameworkElement_OnLoaded" VerticalAlignment="Bottom" ChartType="{Binding Path=LineSymbols,UpdateSourceTrigger=PropertyChanged}"  MinHeight="300"  BorderThickness="0" MinWidth="500" Data="{Binding Path=ChartData,UpdateSourceTrigger=PropertyChanged}" >
                             <c1:C1ChartLegend DockPanel.Dock="Top" />
                         </c1:C1Chart>
                     </DockPanel>

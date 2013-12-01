@@ -61,7 +61,7 @@ namespace Company.DataViewer.ViewModel
             GraphViewModel graphViewModelTemp = null;
             foreach (var graphViewModel in _graphItems)
             {
-                if (graphViewModel.BreakPointId.Equals(breakPointId))
+                if (graphViewModel.BreakPoint.Id.Equals(breakPointId))
                 {
                     graphViewModelTemp = graphViewModel;
                     break;
@@ -100,7 +100,7 @@ namespace Company.DataViewer.ViewModel
                 {
                     foreach (var dataBreakpoint in _breakpoints)
                     {
-                        var graphViewModel = new GraphViewModel(dataBreakpoint.Id, Remove);
+                        var graphViewModel = new GraphViewModel(dataBreakpoint, Remove);
                         graphViewModel.PauseClicked += new GraphViewModel.ClickEventHandler(graphViewModel_PauseClicked);
                         graphViewModel.RunClicked += new GraphViewModel.ClickEventHandler(graphViewModel_RunClicked);
                         Add(graphViewModel);
@@ -112,17 +112,18 @@ namespace Company.DataViewer.ViewModel
         private void graphViewModel_RunClicked(object o, GraphEventArgs e)
         {
             var breakPointInfo = new DataBreakpointTriggerInfo { ContinueExecution = true ,IsEnabled = true,Message = ""};
-            _service.ChangeWhenHitInformation(e.GraphViewModel.BreakPointId, breakPointInfo);
+            _service.ChangeWhenHitInformation(e.GraphViewModel.BreakPoint.Id, breakPointInfo);
         }
 
         private void graphViewModel_PauseClicked(object o, GraphEventArgs e)
         {
             var breakPointInfo = new DataBreakpointTriggerInfo { ContinueExecution = false, IsEnabled = false,Message = ""};
-            _service.ChangeWhenHitInformation(e.GraphViewModel.BreakPointId, breakPointInfo );
+            _service.ChangeWhenHitInformation(e.GraphViewModel.BreakPoint.Id, breakPointInfo );
         }
 
         void _service_EnterDataBreakpointTriggerMode(object sender, DataBreakpointTriggerEventArgs e)
         {
+
             UpdateGraphs();
         }
 
@@ -134,10 +135,12 @@ namespace Company.DataViewer.ViewModel
             {
                 try
                 {
-                    var breakpointInfo = _service.GetDataBreakpoint(graphViewModel.BreakPointId);
+                    var breakpointInfo = _service.GetDataBreakpoint(graphViewModel.BreakPoint.Id);
                     if (breakpointInfo.State == DataBreakpointState.Bound)
                     {
-                        double plotValue = 0;
+                        Dictionary<ulong ,byte> digitalValues = new Dictionary<ulong, byte>(); 
+                        double linearValue = 0;
+                        byte[] bytes;
                         var str = breakpointInfo.Address;
                         var byteCount = Convert.ToInt32(breakpointInfo.Config.ByteCount);
                         str = str.Replace("0x", "");
@@ -146,16 +149,22 @@ namespace Company.DataViewer.ViewModel
                         if (location.Contains("&") && IsValidVariable(location) && startAddress != 0 & location!=breakpointInfo.Address)
                         {
                             var variable = breakpointInfo.Config.Location.Replace("&", "");
-                            var value1 = _expressionEvaluationWrapper.GetVaraibleValue(variable);
-                            plotValue = Convert.ToDouble(value1);
+                            var stringval = _expressionEvaluationWrapper.GetVaraibleValue(variable);
+                            linearValue = Convert.ToDouble(stringval);
+                            bytes = _expressionEvaluationWrapper.GetValueAtAddress(startAddress, byteCount);
                             
                         }
                         else
                         {
-                            var value = _expressionEvaluationWrapper.GetValueAtAddress(startAddress, byteCount);
-                            plotValue = value[0];
+                             bytes = _expressionEvaluationWrapper.GetValueAtAddress(startAddress, byteCount);
+                            linearValue = bytes[0];
                         }
-                        graphViewModel.AddPoint(plotValue);
+                        foreach (byte b in bytes)
+                        {
+                            digitalValues.Add(startAddress, b);
+                            startAddress = startAddress + 1;
+                        }
+                        graphViewModel.AddPoint(linearValue,digitalValues);
                     }
                 }
                 catch
@@ -221,7 +230,8 @@ namespace Company.DataViewer.ViewModel
                     _breakpoints = new List<IDataBreakpoint>(_service.DataBreakpoints);
                     foreach (var breakpointId in e.BreakpointIds)
                     {
-                        var graphViewModel = new GraphViewModel(breakpointId, Remove);
+                        IDataBreakpoint breakPointInfo = _service.GetDataBreakpoint(breakpointId);
+                        var graphViewModel = new GraphViewModel(breakPointInfo, Remove);
                         graphViewModel.PauseClicked += new GraphViewModel.ClickEventHandler(graphViewModel_PauseClicked);
                         graphViewModel.RunClicked += new GraphViewModel.ClickEventHandler(graphViewModel_RunClicked);
                         Add(graphViewModel);

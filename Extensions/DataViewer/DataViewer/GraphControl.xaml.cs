@@ -28,6 +28,7 @@ namespace Company.DataViewer
             
             if (c1Chart != null)
             {
+                
                 foreach (var child in c1Chart.Data.Children)
                 {
                     child.SymbolSize = new Size(6, 6);
