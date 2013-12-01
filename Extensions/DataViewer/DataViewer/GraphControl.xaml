@@ -11,7 +11,7 @@
         
         <DataTemplate x:Key="ListViewItem">
             <Border x:Name="MyBorder" Background="White" HorizontalAlignment="Stretch" Margin="5" >
-                <DockPanel Margin="2" Background="White">
+                <DockPanel Margin="2" IsEnabled="{Binding Path=IsBound,UpdateSourceTrigger=PropertyChanged}" Background="White">
                     <StackPanel  Margin="2" Height="28"  HorizontalAlignment="Stretch" Orientation="Horizontal" Background="White" DockPanel.Dock="Top" >
                         <Button BorderBrush="White" IsEnabled="{Binding Path=PauseButtonEnable, UpdateSourceTrigger=PropertyChanged}" Command="{Binding Path=PauseButtonClick,UpdateSourceTrigger=PropertyChanged}"  Margin="4,0,0,0" >
                             <Image Source="Resources\pause.png"/>

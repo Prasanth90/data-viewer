@@ -22,9 +22,6 @@ namespace Company.DataViewer.ViewModel
 
         private bool _pauseButtonEnable;
         private bool _runButtonEnable;
-        private Brush _symbolFill;
-        private Marker _symbolMarker;
-        private Brush _connectionFill;
         private string _selectedGraphType;
         private ObservableCollection<string> _addresses;
         private string _selectedAddress;
@@ -37,6 +34,7 @@ namespace Company.DataViewer.ViewModel
         public GraphViewModel( IDataBreakpoint breakPoint, Action<GraphViewModel> removeAction)
         {        
             BreakPoint = breakPoint;
+            IsBound = (BreakPoint.State == DataBreakpointState.Bound);
             _removeAction = removeAction;
             PauseButtonEnable = false;
             RunButtonEnable = true;
@@ -66,14 +64,23 @@ namespace Company.DataViewer.ViewModel
         private ObservableCollection<string> GetAddresses()
         {
             var addresses = new ObservableCollection<string>();
-            var address = BreakPoint.Address.Replace("0x", "");
-            ulong startAddress = ulong.Parse(address, NumberStyles.HexNumber);
-            for (int i = 0; i < BreakPoint.Config.ByteCount; i++)
+            if (!string.IsNullOrEmpty(BreakPoint.Address))
             {
-                addresses.Add(startAddress.ToString());
-                startAddress = startAddress + 1;
+                var address = BreakPoint.Address.Replace("0x", "");
+                ulong startAddress = ulong.Parse(address, NumberStyles.HexNumber);
+                for (int i = 0; i < BreakPoint.Config.ByteCount; i++)
+                {
+                    addresses.Add(startAddress.ToString());
+                    startAddress = startAddress + 1;
+                }
             }
             return addresses;
+        }
+
+        public bool IsBound
+        {
+            get { return _isBound; }
+            set { _isBound = value; }
         }
 
         private ObservableCollection<XYDataSeries> GetDigitalDataSeries()
@@ -414,6 +421,7 @@ namespace Company.DataViewer.ViewModel
 
         private Popup _toolTip;
         private int _selectedAddressIndex;
+        private bool _isBound;
 
         private Popup ToolTipControl
         {

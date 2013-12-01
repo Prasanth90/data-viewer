@@ -90,10 +90,14 @@ namespace Company.DataViewer.ViewModel
                 {
                     foreach (var dataBreakpoint in _breakpoints)
                     {
-                        var graphViewModel = new GraphViewModel(dataBreakpoint, Remove);
-                        graphViewModel.PauseClicked += new GraphViewModel.ClickEventHandler(graphViewModel_PauseClicked);
-                        graphViewModel.RunClicked += new GraphViewModel.ClickEventHandler(graphViewModel_RunClicked);
-                        Add(graphViewModel);
+                        if (dataBreakpoint.State == DataBreakpointState.Bound)
+                        {
+                            var graphViewModel = new GraphViewModel(dataBreakpoint, Remove);
+                            graphViewModel.PauseClicked +=
+                                new GraphViewModel.ClickEventHandler(graphViewModel_PauseClicked);
+                            graphViewModel.RunClicked += new GraphViewModel.ClickEventHandler(graphViewModel_RunClicked);
+                            Add(graphViewModel);
+                        }
                     }
                 }
             }
@@ -203,15 +207,45 @@ namespace Company.DataViewer.ViewModel
         void _service_BreakpointsChanged(object sender, BreakpointsChangedEventArgs e)
         {
             _breakpoints = new List<IDataBreakpoint>(_service.DataBreakpoints);
+            foreach (string breakpointId in e.BreakpointIds)
+            {
+                IDataBreakpoint breakPointInfo = _service.GetDataBreakpoint(breakpointId);
+                if (!CheckIfAlreadyBound(breakPointInfo))
+                {
+                    Remove(breakpointId);
+                    if (breakPointInfo.State == DataBreakpointState.Bound)
+                    {
+                        var graphViewModel = new GraphViewModel(breakPointInfo, Remove);
+                        graphViewModel.PauseClicked += new GraphViewModel.ClickEventHandler(graphViewModel_PauseClicked);
+                        graphViewModel.RunClicked += new GraphViewModel.ClickEventHandler(graphViewModel_RunClicked);
+                        Add(graphViewModel);
+                    }
+                }
+            }
+        }
+
+        private bool CheckIfAlreadyBound(IDataBreakpoint breakPointInfo)
+        {
+            foreach (GraphViewModel graphViewModel in GraphItems)
+            {
+                if (graphViewModel.BreakPoint.Id == breakPointInfo.Id)
+                {
+                    if (breakPointInfo.State == DataBreakpointState.Bound)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         void _service_BreakpointsRemoved(object sender, BreakpointsChangedEventArgs e)
         {
-                    _breakpoints = new List<IDataBreakpoint>(_service.DataBreakpoints);
-                    foreach (var breakpointId in e.BreakpointIds)
-                    {
-                        Remove(breakpointId);
-                    }
+            _breakpoints = new List<IDataBreakpoint>(_service.DataBreakpoints);
+            foreach (var breakpointId in e.BreakpointIds)
+            {
+                Remove(breakpointId);
+            }
         }
 
         void _service_BreakpointsAdded(object sender, BreakpointsChangedEventArgs e)
@@ -220,10 +254,14 @@ namespace Company.DataViewer.ViewModel
                     foreach (var breakpointId in e.BreakpointIds)
                     {
                         IDataBreakpoint breakPointInfo = _service.GetDataBreakpoint(breakpointId);
-                        var graphViewModel = new GraphViewModel(breakPointInfo, Remove);
-                        graphViewModel.PauseClicked += new GraphViewModel.ClickEventHandler(graphViewModel_PauseClicked);
-                        graphViewModel.RunClicked += new GraphViewModel.ClickEventHandler(graphViewModel_RunClicked);
-                        Add(graphViewModel);
+                        if (breakPointInfo.State == DataBreakpointState.Bound)
+                        {
+                            var graphViewModel = new GraphViewModel(breakPointInfo, Remove);
+                            graphViewModel.PauseClicked +=
+                                new GraphViewModel.ClickEventHandler(graphViewModel_PauseClicked);
+                            graphViewModel.RunClicked += new GraphViewModel.ClickEventHandler(graphViewModel_RunClicked);
+                            Add(graphViewModel);
+                        }
                     }
         }
 
