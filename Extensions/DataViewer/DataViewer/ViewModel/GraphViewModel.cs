@@ -316,6 +316,7 @@ namespace Company.DataViewer.ViewModel
         public ICommand PauseButtonClick { get; set; }
         public ICommand RunButtonClick { get; set; }
         public ICommand CloseButtonClick { get; set; }
+        
 
         public bool PauseButtonEnable
         {

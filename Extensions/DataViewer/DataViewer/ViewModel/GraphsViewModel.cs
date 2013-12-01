@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Windows.Input;
+using Atmel.Studio.Library.Wizard;
 using Atmel.Studio.Services;
-using Atmel.Studio.Services.Device;
-using Atmel.VsIde.AvrStudio.Services.TargetService;
-using Atmel.VsIde.AvrStudio.Services.TargetService.TCF.Internal.Services.Remote;
-using Atmel.VsIde.AvrStudio.Services.TargetService.TCF.Services;
 using Company.DataViewer.ExpressionEvaluator;
+using Company.DataViewer.Utils;
 using Fdk.Ui.ViewModelUtils;
 using Microsoft.VisualStudio.Shell;
 
@@ -17,21 +16,33 @@ namespace Company.DataViewer.ViewModel
     {
         private ObservableCollection<GraphViewModel> _graphItems;
         private IDataBreakpointService _service;
-        private ITargetService2 _targetService2;
-        private ITargetService _targetService;
         private List<IDataBreakpoint> _breakpoints;
-        private ITarget2 _target;
-        private ExpressionEvaluator.ExpressionEvaluationWrapper _expressionEvaluationWrapper;
+        private ExpressionEvaluationWrapper _expressionEvaluationWrapper;
         private EnvDTE.DTE _dte;
 
         public GraphsViewModel()
         {
             GraphItems = new ObservableCollection<GraphViewModel>();
             _breakpoints = new List<IDataBreakpoint>();
+            AddButtonClick = new RelayCommand<EventArgs>(AddButtonClickHandler);
+            SettingsButtonClick = new RelayCommand<EventArgs>(SettingsButtonClickHandler);
             _dte = Package.GetGlobalService(typeof (EnvDTE.DTE)) as EnvDTE.DTE;
             _expressionEvaluationWrapper = new ExpressionEvaluationWrapper();
             Subscribe();
         }
+
+        private void SettingsButtonClickHandler(EventArgs obj)
+        {
+            DataViewerUtils.ShowDataViewerSettingsOptionsPage();
+        }
+
+        private void AddButtonClickHandler(EventArgs obj)
+        {
+            
+        }
+
+        public ICommand AddButtonClick { get; set; }
+        public ICommand SettingsButtonClick { get; set; }
 
         public ObservableCollection<GraphViewModel> GraphItems
         {
@@ -75,8 +86,6 @@ namespace Company.DataViewer.ViewModel
 
         private void Subscribe()
         {
-            _targetService2 = ATServiceProvider.TargetService2;
-            _targetService = ATServiceProvider.TargetService2 as ITargetService;
             _service = ATServiceProvider.DataBreakpointService;
             if (_service != null)
             {
@@ -123,7 +132,6 @@ namespace Company.DataViewer.ViewModel
 
         private void UpdateGraphs()
         {
-            _target = _targetService2.GetLaunchedTarget();
             //IAddressSpace addressSpace = _target.Device.GetAddressSpace(MemoryTypes.Data);
             foreach (var graphViewModel in GraphItems)
             {
@@ -203,7 +211,6 @@ namespace Company.DataViewer.ViewModel
             return true;
         }
         
-
         void _service_BreakpointsChanged(object sender, BreakpointsChangedEventArgs e)
         {
             _breakpoints = new List<IDataBreakpoint>(_service.DataBreakpoints);

@@ -44,7 +44,19 @@
     </UserControl.Resources>
 
     <Grid >
-            <ListView HorizontalContentAlignment="Stretch" DockPanel.Dock="Top" Style="{StaticResource MyListViewStyle}"   ItemsSource="{Binding GraphItems}" BorderBrush="White" ItemTemplate="{StaticResource ListViewItem}" >
+        <DockPanel>
+            <StackPanel  Background="#FFBCC7D8"  DockPanel.Dock="Top" Height="30" HorizontalAlignment="Stretch" Orientation="Horizontal">
+                
+                <Button BorderBrush="White" Width="25" Height="25" Command="{Binding Path=AddButtonClick,UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0">
+                    <Image Source="Resources\close.png"/>
+                </Button>
+                <Button BorderBrush="White" Width="25" Height="25" Command="{Binding Path=SettingsButtonClick,UpdateSourceTrigger=PropertyChanged}" Margin="4,0,0,0">
+                    <Image  Source="Resources\close.png"  />
+                </Button>
+            </StackPanel>
+            <ListView  HorizontalContentAlignment="Stretch" DockPanel.Dock="Top" Style="{StaticResource MyListViewStyle}"   ItemsSource="{Binding GraphItems}" BorderBrush="White" ItemTemplate="{StaticResource ListViewItem}" >
             </ListView>
+        </DockPanel>
+            
     </Grid>
 </UserControl>
