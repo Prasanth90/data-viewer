@@ -151,8 +151,7 @@ namespace Company.DataViewer.ViewModel
                             var variable = breakpointInfo.Config.Location.Replace("&", "");
                             var stringval = _expressionEvaluationWrapper.GetVaraibleValue(variable);
                             linearValue = Convert.ToDouble(stringval);
-                            bytes = _expressionEvaluationWrapper.GetValueAtAddress(startAddress, byteCount);
-                            
+                            bytes = _expressionEvaluationWrapper.GetValueAtAddress(startAddress, byteCount);        
                         }
                         else
                         {

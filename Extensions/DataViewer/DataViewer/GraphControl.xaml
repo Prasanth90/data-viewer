@@ -23,7 +23,7 @@
                             <Image Source="Resources\close.png"/>
                         </Button>
                         <ComboBox ItemsSource="{Binding Path=GraphTypes, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedGraphType ,UpdateSourceTrigger=PropertyChanged}" />
-                        <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=Addresses, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedAddress ,UpdateSourceTrigger=PropertyChanged}" />
+                        <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=Addresses, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedAddress ,UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding Path=SelectedAddressIndex,UpdateSourceTrigger=PropertyChanged}" />
                         <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=Bits, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                     <DockPanel >

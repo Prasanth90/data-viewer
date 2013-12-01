@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,7 +41,7 @@ namespace Company.DataViewer.ViewModel
             PauseButtonEnable = false;
             RunButtonEnable = true;
             GraphTypes = new ObservableCollection<string>() {"Linear", "Digital"};
-            Addresses = new ObservableCollection<string>() {breakPoint.Address};
+            Addresses = GetAddresses();
             SymbolFill = Settings.GraphSettings.MarkerColour;
             SymbolMarker = Settings.GraphSettings.MarkerSymbol;
             ConnectionFill = Settings.GraphSettings.LineColour;
@@ -52,6 +53,19 @@ namespace Company.DataViewer.ViewModel
             DigitalDataSeries = GetDigitalDataSeries();
             SelectedAddress = Addresses.FirstOrDefault();
             SelectedGraphType = GraphTypes.FirstOrDefault();
+        }
+
+        private ObservableCollection<string> GetAddresses()
+        {
+            var addresses = new ObservableCollection<string>();
+            var address = BreakPoint.Address.Replace("0x", "");
+            ulong startAddress = ulong.Parse(address, NumberStyles.HexNumber);
+            for (int i = 0; i < BreakPoint.Config.ByteCount; i++)
+            {
+                addresses.Add(startAddress.ToString());
+                startAddress = startAddress + 1;
+            }
+            return addresses;
         }
 
         private ObservableCollection<XYDataSeries> GetDigitalDataSeries()
@@ -70,16 +84,14 @@ namespace Company.DataViewer.ViewModel
                     ItemsSource = Results,
                     XValueBinding = new Binding()
                     {
-                        Path = new PropertyPath(string.Format("Bit{0}.Key",i.ToString())),
+                        Path = new PropertyPath(string.Format("Bit{0}[{1}].Key", i.ToString(), SelectedAddressIndex)),
                         UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                     },
                     ValueBinding = new Binding()
                     {
-                        Path = new PropertyPath(string.Format("Bit{0}.Value", i.ToString())),
+                        Path = new PropertyPath(string.Format("Bit{0}[{1}].Value", i.ToString(), SelectedAddressIndex)),
                         UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                    },
-                    
-                   
+                    },        
                 };
                 dataseries.PlotElementLoaded+=new EventHandler(DataSeries_OnPlotElementLoaded);
                 
@@ -190,6 +202,18 @@ namespace Company.DataViewer.ViewModel
                     ChartView.AxisY.MajorUnit = double.NaN;
                 }
                 this.OnPropertyChanged("SelectedGraphType");
+            }
+        }
+
+        public int SelectedAddressIndex
+        {
+            get { return _selectedAddressIndex; }
+            set
+            {
+                _selectedAddressIndex = value;
+                this.OnPropertyChanged("SelectedAddressIndex");
+                DigitalDataSeries = GetDigitalDataSeries();
+                SelectedGraphType = _selectedGraphType;
             }
         }
 
@@ -396,6 +420,8 @@ namespace Company.DataViewer.ViewModel
         }
 
         private Popup _toolTip;
+        private int _selectedAddressIndex;
+
         private Popup ToolTipControl
         {
             get
@@ -446,15 +472,26 @@ namespace Company.DataViewer.ViewModel
             KeyValuePair = keyValuePair;
             DigitalDictionary = digitalDictionary;
             var serialNo = keyValuePair.Key;
-            byte valAtFirstAddress = digitalDictionary.First().Value;
-            Bit0 = new KeyValuePair<int, double>(serialNo, 0 +  (GetBit(valAtFirstAddress, 0) ? 5 : 0));
-            Bit1 = new KeyValuePair<int, double>(serialNo, 10 + (GetBit(valAtFirstAddress, 1) ? 5 : 0));
-            Bit2 = new KeyValuePair<int, double>(serialNo, 20 + (GetBit(valAtFirstAddress, 2) ? 5 : 0));
-            Bit3 = new KeyValuePair<int, double>(serialNo, 30 + (GetBit(valAtFirstAddress, 3) ? 5 : 0));
-            Bit4 = new KeyValuePair<int, double>(serialNo, 40 + (GetBit(valAtFirstAddress, 4) ? 5 : 0));
-            Bit5 = new KeyValuePair<int, double>(serialNo, 50 + (GetBit(valAtFirstAddress, 5) ? 5 : 0));
-            Bit6 = new KeyValuePair<int, double>(serialNo, 60 + (GetBit(valAtFirstAddress, 6) ? 5 : 0));
-            Bit7 = new KeyValuePair<int, double>(serialNo, 70 + (GetBit(valAtFirstAddress, 7) ? 5 : 0));
+            Bit0 = new List<KeyValuePair<int, double>>();
+            Bit1 = new List<KeyValuePair<int, double>>();
+            Bit2 = new List<KeyValuePair<int, double>>();
+            Bit3 = new List<KeyValuePair<int, double>>();
+            Bit4 = new List<KeyValuePair<int, double>>();
+            Bit5 = new List<KeyValuePair<int, double>>();
+            Bit6 = new List<KeyValuePair<int, double>>();
+            Bit7 = new List<KeyValuePair<int, double>>();
+            foreach (KeyValuePair<ulong, byte> valuePair in digitalDictionary)
+            {
+                byte value = valuePair.Value;
+                Bit0.Add(new KeyValuePair<int, double>(serialNo, 0 + (GetBit(value,  1) ? 5 : 0)));
+                Bit1.Add(new KeyValuePair<int, double>(serialNo, 10 + (GetBit(value, 2) ? 5 : 0)));
+                Bit2.Add(new KeyValuePair<int, double>(serialNo, 20 + (GetBit(value, 3) ? 5 : 0)));
+                Bit3.Add(new KeyValuePair<int, double>(serialNo, 30 + (GetBit(value, 4) ? 5 : 0)));
+                Bit4.Add(new KeyValuePair<int, double>(serialNo, 40 + (GetBit(value, 5) ? 5 : 0)));
+                Bit5.Add(new KeyValuePair<int, double>(serialNo, 50 + (GetBit(value, 6) ? 5 : 0)));
+                Bit6.Add(new KeyValuePair<int, double>(serialNo, 60 + (GetBit(value, 7) ? 5 : 0)));
+                Bit7.Add(new KeyValuePair<int, double>(serialNo, 70 + (GetBit(value, 8) ? 5 : 0)));
+            }
         }
 
         public static bool GetBit(byte b, int bitNumber)
@@ -471,43 +508,43 @@ namespace Company.DataViewer.ViewModel
             set;
         }
         
-        public KeyValuePair<int, double> Bit0
+        public List<KeyValuePair<int, double>> Bit0
         {
             get;
             set;
         }
 
-        public KeyValuePair<int, double> Bit1
+        public List<KeyValuePair<int, double>> Bit1
         {
             get;
             set;
         }
-        public KeyValuePair<int, double> Bit2
+        public List<KeyValuePair<int, double>> Bit2
         {
             get;
             set;
         }
-        public KeyValuePair<int, double> Bit3
+        public List<KeyValuePair<int, double>> Bit3
         {
             get;
             set;
         }
-        public KeyValuePair<int, double> Bit4
+        public List<KeyValuePair<int, double>> Bit4
         {
             get;
             set;
         }
-        public KeyValuePair<int, double> Bit5
+        public List<KeyValuePair<int, double>> Bit5
         {
             get;
             set;
         }
-        public KeyValuePair<int, double> Bit6
+        public List<KeyValuePair<int, double>> Bit6
         {
             get;
             set;
         }
-        public KeyValuePair<int, double> Bit7
+        public List<KeyValuePair<int, double>> Bit7
         {
             get;
             set;
