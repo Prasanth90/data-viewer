@@ -9,6 +9,7 @@ using System.ComponentModel.Design;
 using Atmel.Studio.Services;
 using Atmel.Studio.Services.Device;
 using Company.DataViewer.Options;
+using Company.DataViewer.Utils;
 using EnvDTE;
 using Microsoft.Win32;
 using Microsoft.VisualStudio;
@@ -98,40 +99,49 @@ namespace Company.DataViewer
                 var graphSettings = new GraphSettings();
                 Settings.GraphSettings = graphSettings;
                 Settings.GraphSettings.ApplySettings(optionsPage);
-                // Create the command for the menu item.
-                CommandID menuCommandID = new CommandID(GuidList.guidDataViewerCmdSet, (int)PkgCmdIDList.DatViewCommand);
-                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
-                mcs.AddCommand( menuItem );
+
                 // Create the command for the tool window
                 CommandID toolwndCommandID = new CommandID(GuidList.guidDataViewerCmdSet, (int)PkgCmdIDList.cmdidMyToolWindow);
                 MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
                 mcs.AddCommand( menuToolWin );
+
+
+                //Options
+                var menuOptionsCmd = new CommandID(GuidList.guidDataViewerCmdSet,
+                                                  (int)PkgCmdIDList.cmdidOptions);
+                var menuOptionsCommand = new OleMenuCommand(OpenOptions, menuOptionsCmd) { Checked = false };
+                mcs.AddCommand(menuOptionsCommand);
+
+                //Help
+                var menuHelpCmd = new CommandID(GuidList.guidDataViewerCmdSet,(int)PkgCmdIDList.cmdidHelp);
+                var menuHelpCommand = new OleMenuCommand(RunHelp, menuHelpCmd) { Checked = false };
+                mcs.AddCommand(menuHelpCommand);
+
+
+                //delete all
+                var menuDeleteAllCmd = new CommandID(GuidList.guidDataViewerCmdSet,(int)PkgCmdIDList.cmdidRemoveAll);
+                var menuDeleteAllCommand = new OleMenuCommand(WatchDeleteAll, menuDeleteAllCmd) { Checked = false };
+                mcs.AddCommand(menuDeleteAllCommand);
+                
             }
         }
 
+        private void WatchDeleteAll(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void RunHelp(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void OpenOptions(object sender, EventArgs e)
+        {
+            DataViewerUtils.ShowDataViewerSettingsOptionsPage();
+        }
 
         #endregion
-
-
-
-
-
-
-        /// <summary>
-        /// This function is the callback used to execute a command when the a menu item is clicked.
-        /// See the Initialize method to see how the menu item is associated to this function using
-        /// the OleMenuCommandService service and the MenuCommand class.
-        /// </summary>
-
-
-        /// <summary>
-        /// This function is the callback used to execute a command when the a menu item is clicked.
-        /// See the Initialize method to see how the menu item is associated to this function using
-        /// the OleMenuCommandService service and the MenuCommand class.
-        /// </summary>
-        private void MenuItemCallback(object sender, EventArgs e)
-        {
-        }
 
         private DataViewerOptionsPage GetOptionsPage()
         {

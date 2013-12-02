@@ -25,16 +25,15 @@ namespace Company.DataViewer.ViewModel
         private string _selectedGraphType;
         private ObservableCollection<string> _addresses;
         private string _selectedAddress;
-        private ObservableCollection<string> _bits = new ObservableCollection<string>(){"0","1","2","3","4","5","6","7"};
         private bool _isControlEnabled;
         private ChartData _chartData = new ChartData();
         private ChartType _lineSymbols;
         private ChartView _chartView = new ChartView();
-
         public GraphViewModel( IDataBreakpoint breakPoint, Action<GraphViewModel> removeAction)
         {        
             BreakPoint = breakPoint;
             IsBound = (BreakPoint.State == DataBreakpointState.Bound);
+            UpdateBits();
             _removeAction = removeAction;
             PauseButtonEnable = false;
             RunButtonEnable = true;
@@ -49,6 +48,24 @@ namespace Company.DataViewer.ViewModel
             SelectedAddress = Addresses.FirstOrDefault();
             SelectedGraphType = GraphTypes.FirstOrDefault();
             Settings.GraphSettings.OptionsChanged += new EventHandler(settings_OptionsChanged);
+        }
+
+        public void UpdateBits()
+        {
+             Bits = new ObservableCollection<BitData>();
+            for (int i = 0; i < 8; i++)
+            {
+                Bits.Add(new BitData(Changed)
+                {
+                    BitName = "Bit " + i.ToString()
+                });
+            }
+        }
+
+        private void Changed()
+        {
+            DigitalDataSeries = GetDigitalDataSeries();
+            SelectedGraphType = _selectedGraphType;
         }
 
         private void settings_OptionsChanged(object sender, EventArgs e)
@@ -88,29 +105,36 @@ namespace Company.DataViewer.ViewModel
             var digitalDataSeriesSet = new ObservableCollection<XYDataSeries>();
             for (int i = 0; i <= 7;i++ )
             {
-                var dataseries = new XYDataSeries()
+                if (Bits[i].IsChecked)
                 {
-                    SymbolSize = new Size(6, 6),
-                    SymbolFill = SymbolFill,
-                    SymbolMarker = SymbolMarker,
-                    ConnectionFill = ConnectionFill,
-                    RenderMode = RenderMode.Default,
-                    Label = string.Format("Bit {0}", i.ToString()),
-                    ItemsSource = Results,
-                    XValueBinding = new Binding()
-                    {
-                        Path = new PropertyPath(string.Format("Bit{0}[{1}].Key", i.ToString(), SelectedAddressIndex)),
-                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                    },
-                    ValueBinding = new Binding()
-                    {
-                        Path = new PropertyPath(string.Format("Bit{0}[{1}].Value", i.ToString(), SelectedAddressIndex)),
-                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                    },        
-                };
-                dataseries.PlotElementLoaded+=new EventHandler(DataSeries_OnPlotElementLoaded);
-                
-                digitalDataSeriesSet.Add(dataseries);
+                    var dataseries = new XYDataSeries()
+                        {
+                            SymbolSize = new Size(6, 6),
+                            SymbolFill = SymbolFill,
+                            SymbolMarker = SymbolMarker,
+                            ConnectionFill = ConnectionFill,
+                            RenderMode = RenderMode.Default,
+                            Label = string.Format("Bit {0}", i.ToString()),
+                            ItemsSource = Results,
+                            XValueBinding = new Binding()
+                                {
+                                    Path =
+                                        new PropertyPath(string.Format("Bit{0}[{1}].Key", i.ToString(),
+                                                                       SelectedAddressIndex)),
+                                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                                },
+                            ValueBinding = new Binding()
+                                {
+                                    Path =
+                                        new PropertyPath(string.Format("Bit{0}[{1}].Value", i.ToString(),
+                                                                       SelectedAddressIndex)),
+                                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                                },
+                        };
+                    dataseries.PlotElementLoaded += new EventHandler(DataSeries_OnPlotElementLoaded);
+
+                    digitalDataSeriesSet.Add(dataseries);
+                }
             }
 
             return digitalDataSeriesSet;
@@ -248,12 +272,15 @@ namespace Company.DataViewer.ViewModel
             }
         }
 
-        public ObservableCollection<string> Bits
+        private ObservableCollection<BitData> _bits;
+
+        public ObservableCollection<BitData> Bits
         {
             get { return _bits; }
             set
             {
                 _bits = value;
+                this.OnPropertyChanged("Bits");
             }
         }
 

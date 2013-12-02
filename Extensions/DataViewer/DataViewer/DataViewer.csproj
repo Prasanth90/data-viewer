@@ -167,6 +167,7 @@
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Utils\DataViewerUtils.cs" />
     <Compile Include="Utils\ViewModelBase.cs" />
+    <Compile Include="ViewModel\BitData.cs" />
     <Compile Include="ViewModel\GraphsViewModel.cs" />
     <Compile Include="ViewModel\GraphViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
@@ -197,10 +198,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Images_32bit.bmp" />
-    <None Include="Resources\Images_24bit.bmp" />
+    <None Include="Resources\Imagess_24bit.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\close.png" />
+    <Resource Include="Resources\Images_24bit.bmp" />
+    <Resource Include="Resources\help.ico" />
     <Content Include="Resources\Package.ico" />
     <Resource Include="Resources\pause.png" />
     <Resource Include="Resources\Play.png" />

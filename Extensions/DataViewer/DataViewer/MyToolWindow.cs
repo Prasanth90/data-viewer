@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Drawing;
 using System.Data;
 using System.Windows;
@@ -30,6 +31,9 @@ namespace Company.DataViewer
         {
             // Set the window title reading it from the resources.
             this.Caption = Resources.ToolWindowTitle;
+
+            ToolBar = new CommandID(GuidList.guidDataViewerCmdSet,
+                 (int)PkgCmdIDList.TWToolbar);
             // Set the image that will appear on the tab of the window frame
             // when docked with an other window
             // The resource ID correspond to the one defined in the resx file

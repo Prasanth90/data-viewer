@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Input;
-using Atmel.Studio.Library.Wizard;
 using Atmel.Studio.Services;
 using Company.DataViewer.ExpressionEvaluator;
 using Company.DataViewer.Utils;
@@ -24,21 +23,9 @@ namespace Company.DataViewer.ViewModel
         {
             GraphItems = new ObservableCollection<GraphViewModel>();
             _breakpoints = new List<IDataBreakpoint>();
-            AddButtonClick = new RelayCommand<EventArgs>(AddButtonClickHandler);
-            SettingsButtonClick = new RelayCommand<EventArgs>(SettingsButtonClickHandler);
             _dte = Package.GetGlobalService(typeof (EnvDTE.DTE)) as EnvDTE.DTE;
             _expressionEvaluationWrapper = new ExpressionEvaluationWrapper();
             Subscribe();
-        }
-
-        private void SettingsButtonClickHandler(EventArgs obj)
-        {
-            DataViewerUtils.ShowDataViewerSettingsOptionsPage();
-        }
-
-        private void AddButtonClickHandler(EventArgs obj)
-        {
-            
         }
 
         public ICommand AddButtonClick { get; set; }
