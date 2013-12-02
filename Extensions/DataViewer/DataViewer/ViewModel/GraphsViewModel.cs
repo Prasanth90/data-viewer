@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Input;
-using Atmel.Studio.Library.Wizard;
 using Atmel.Studio.Services;
 using Company.DataViewer.ExpressionEvaluator;
 using Company.DataViewer.Utils;
