@@ -26,10 +26,10 @@
                         </Button>
                         <ComboBox ItemsSource="{Binding Path=GraphTypes, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedGraphType ,UpdateSourceTrigger=PropertyChanged}" />
                         <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=Addresses, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedAddress ,UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding Path=SelectedAddressIndex,UpdateSourceTrigger=PropertyChanged}" />
-                        <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" Height="30" Width="100" ItemsSource="{Binding Path=Bits,UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource ComboBoxItem}"/>
+                        <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}"  Width="100" ItemsSource="{Binding Path=Bits,UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource ComboBoxItem}"/>
                     </StackPanel>
                     <DockPanel >
-                        <c1:C1Chart   HorizontalAlignment="Stretch" View="{Binding Path=ChartView,UpdateSourceTrigger=PropertyChanged}"  Loaded="FrameworkElement_OnLoaded" VerticalAlignment="Bottom" ChartType="{Binding Path=LineSymbols,UpdateSourceTrigger=PropertyChanged}"  MinHeight="300"  BorderThickness="0" MinWidth="500" Data="{Binding Path=ChartData,UpdateSourceTrigger=PropertyChanged}" >
+                        <c1:C1Chart   HorizontalAlignment="Stretch" View="{Binding Path=ChartView,UpdateSourceTrigger=PropertyChanged}"  Loaded="FrameworkElement_OnLoaded" VerticalAlignment="Bottom" ChartType="{Binding Path=LineSymbols,UpdateSourceTrigger=PropertyChanged}"  MinHeight="275"  BorderThickness="0" MinWidth="500" Data="{Binding Path=ChartData,UpdateSourceTrigger=PropertyChanged}" >
                             <c1:C1ChartLegend DockPanel.Dock="Top" />
                         </c1:C1Chart>
                     </DockPanel>
@@ -48,7 +48,7 @@
     <Grid>
         <DockPanel Name="HostPanel" Background="WhiteSmoke">
                 <TextBlock Name="Message"  Margin="0,0,0,0" Background="WhiteSmoke"  Foreground="Blue" TextWrapping="WrapWithOverflow" Width="Auto" VerticalAlignment="Center"  HorizontalAlignment="Center">
-                     <Hyperlink  Foreground="Blue" Click="Clicked">Add graph plots by adding Data break points.Click Here to Add Data Break Points</Hyperlink>
+                     <Hyperlink  Foreground="Blue" Click="Clicked">Plot live graph by adding Data break points.Click here to open the DataBreak points window</Hyperlink>
                 </TextBlock>
                <ListView Name="GraphContainer"  HorizontalContentAlignment="Stretch" DockPanel.Dock="Top" Style="{StaticResource MyListViewStyle}"   ItemsSource="{Binding GraphItems}" BorderBrush="White" ItemTemplate="{StaticResource ListViewItem}" >
             </ListView>

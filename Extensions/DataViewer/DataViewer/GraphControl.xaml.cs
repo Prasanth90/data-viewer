@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using C1.WPF.C1Chart;
 using Company.DataViewer.ViewModel;
+using Microsoft.VisualStudio.Shell;
 
 namespace Company.DataViewer
 {
@@ -18,7 +19,8 @@ namespace Company.DataViewer
         public GraphControl()
         {
             InitializeComponent();
-             _graphsViewModel =  new GraphsViewModel();
+
+            _graphsViewModel = new GraphsViewModel();
             HostPanel.Children.Clear();
             HostPanel.Children.Add(Message);
              _graphsViewModel.GraphItems.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(GraphItems_CollectionChanged);
@@ -99,7 +101,11 @@ namespace Company.DataViewer
 
         private void Clicked(object sender, RoutedEventArgs e)
         {
-
+            var dte = Package.GetGlobalService(typeof (EnvDTE.DTE)) as EnvDTE.DTE;
+            if (dte != null)
+            {
+                dte.ExecuteCommand("Debug.DataBreakpoints");
+            }
         }
     }
 }

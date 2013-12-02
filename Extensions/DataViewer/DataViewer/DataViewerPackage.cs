@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using Atmel.Studio.Services;
@@ -45,7 +47,7 @@ namespace Company.DataViewer
     public sealed class DataViewerPackage : Package
     {
 
-       
+
         /// <summary>
         /// Default constructor of the package.
         /// Inside this method you can place any initialization code that does not require 
@@ -91,6 +93,9 @@ namespace Company.DataViewer
             Trace.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += new ResolveEventHandler(currentDomain_AssemblyResolve);
+
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if ( null != mcs )
@@ -126,14 +131,41 @@ namespace Company.DataViewer
             }
         }
 
+        System.Reflection.Assembly currentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            Assembly myAssembly = null;
+            string reflectionOnlyAssemblyName = "";
+
+            if (args.Name.Contains("C1.WPF.C1Chart.4.dll"))
+            {
+                reflectionOnlyAssemblyName = "C1.WPF.C1Chart.4.dll";
+            }
+
+            var dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var reflectionOnlyAssemblypath = Path.Combine(dir, reflectionOnlyAssemblyName);
+            if (File.Exists(reflectionOnlyAssemblypath))
+            {
+                //Load the assembly from the specified path. 					
+                myAssembly = Assembly.LoadFrom(reflectionOnlyAssemblypath);
+            }
+
+            return myAssembly;
+        }
+
         private void WatchDeleteAll(object sender, EventArgs e)
         {
-            
+
         }
 
         private void RunHelp(object sender, EventArgs e)
         {
-            
+            var dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var helpFilePath = Path.Combine(dir, "DataViewerHelp.pdf");
+            if (File.Exists(helpFilePath))
+            {
+
+                System.Diagnostics.Process.Start(helpFilePath);
+            }   
         }
 
         private void OpenOptions(object sender, EventArgs e)
