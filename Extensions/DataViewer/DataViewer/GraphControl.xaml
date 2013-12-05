@@ -25,7 +25,9 @@
                             <Image Source="Resources\close.png"/>
                         </Button>
                         <ComboBox ItemsSource="{Binding Path=GraphTypes, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedGraphType ,UpdateSourceTrigger=PropertyChanged}" />
+                        <Label IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" Content ="Addresses" />
                         <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Path=Addresses, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding Path=SelectedAddress ,UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding Path=SelectedAddressIndex,UpdateSourceTrigger=PropertyChanged}" />
+                        <Label IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}" Content ="Bits" />
                         <ComboBox IsEnabled="{Binding Path=IsControlEnabled,UpdateSourceTrigger=PropertyChanged}"  Width="100" ItemsSource="{Binding Path=Bits,UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource ComboBoxItem}"/>
                     </StackPanel>
                     <DockPanel >
