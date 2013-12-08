@@ -23,7 +23,6 @@ namespace Company.DataViewer
         public Brush MarkerColour = Brushes.CornflowerBlue;
         public Marker MarkerSymbol = Marker.Dot;
         public Brush LineColour = Brushes.Crimson;
-        public bool SyncDataBreakPointSettings = true;
 
         public void ApplySettings(DataViewerOptionsPage dataViewerOptionsPage)
         {
@@ -48,7 +47,6 @@ namespace Company.DataViewer
             MarkerColour = GetBrush(dataViewerOptionsPage.MarkerColour);
             MarkerSymbol = dataViewerOptionsPage.MarkerSymbol;
             LineColour = GetBrush(dataViewerOptionsPage.LineColour);
-            SyncDataBreakPointSettings = dataViewerOptionsPage.SyncDataBreakPoints;
         }
 
         private  Brush GetBrush(DataViewerOptionsPage.Colours colour)

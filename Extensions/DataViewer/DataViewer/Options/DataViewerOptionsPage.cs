@@ -79,14 +79,14 @@ namespace Company.DataViewer.Options
             set { _markerSymbol = value; }
         }
 
-        [Category(@"DataViewer")]
-        [DisplayName(@"SyncDataBreakPoints")]
-        [Description(@"Enabling this option will load the graph based on the data breakpoints added in the project. Adding a databreakpoint will create a graph to track its value")]
-        public bool SyncDataBreakPoints
-        {
-            get { return _syncDataBreakPoints; }
-            set { _syncDataBreakPoints = value; }
-        }
+        //[Category(@"DataViewer")]
+        //[DisplayName(@"SyncDataBreakPoints")]
+        //[Description(@"Enabling this option will load the graph based on the data breakpoints added in the project. Adding a databreakpoint will create a graph to track its value")]
+        //public bool SyncDataBreakPoints
+        //{
+        //    get { return _syncDataBreakPoints; }
+        //    set { _syncDataBreakPoints = value; }
+        //}
 
 
         public override void SaveSettingsToStorage()

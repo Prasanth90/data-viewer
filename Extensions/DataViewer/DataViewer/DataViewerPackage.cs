@@ -160,7 +160,7 @@ namespace Company.DataViewer
         private void RunHelp(object sender, EventArgs e)
         {
             var dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var helpFilePath = Path.Combine(dir, "DataViewerHelp.pdf");
+            var helpFilePath = Path.Combine(dir, "Resources\\DataViewerHelp.pdf");
             if (File.Exists(helpFilePath))
             {
 

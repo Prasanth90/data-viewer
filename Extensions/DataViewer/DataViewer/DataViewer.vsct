@@ -106,7 +106,7 @@
       </Button>
 
 
-      <Button guid="guidDataViewerCmdSet" id="cmdidRemoveAll" priority="0x062" type="Button" >
+      <!--<Button guid="guidDataViewerCmdSet" id="cmdidRemoveAll" priority="0x062" type="Button" >
         <Parent guid="guidDataViewerCmdSet" id="MyMenuControllerGroup"/>
         <Icon guid="guidImages" id="bmpPicX" />
         <Strings>
@@ -114,7 +114,7 @@
           <CommandName>cmdidRemoveAll</CommandName>
           <ButtonText>Delete all</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
 
       <Button guid="guidDataViewerCmdSet" id="cmdidOptions" priority="0x067" type="Button" >
         <Parent guid="guidDataViewerCmdSet" id="MyMenuControllerGroup"/>
