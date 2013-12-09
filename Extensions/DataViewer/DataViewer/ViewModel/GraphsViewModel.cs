@@ -132,6 +132,10 @@ namespace Company.DataViewer.ViewModel
                         byte[] bytes;
                         var str = breakpointInfo.Address;
                         var byteCount = Convert.ToInt32(breakpointInfo.Config.ByteCount);
+                        if(byteCount==0)
+                        {
+                            byteCount = 1;
+                        }
                         str = str.Replace("0x", "");
                         ulong startAddress = ulong.Parse(str, NumberStyles.HexNumber);
                         var location = breakpointInfo.Config.Location;

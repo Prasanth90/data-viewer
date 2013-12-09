@@ -235,7 +235,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /i /c /y "$(TargetDir)*.*"  "C:\Users\Praz A.J\AppData\Local\Atmel\AtmelStudio\6.1\Extensions\abk0ieo1.0bc"</PostBuildEvent>
+    <PostBuildEvent>xcopy /s /i /c /y "$(TargetDir)*.*"  "C:\Users\prasanth.aj\AppData\Local\Atmel\AtmelStudio\6.1\Extensions\Atmel\DataViewer\1.0"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

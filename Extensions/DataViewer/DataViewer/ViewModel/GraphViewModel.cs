@@ -85,7 +85,8 @@ namespace Company.DataViewer.ViewModel
             {
                 var address = BreakPoint.Address.Replace("0x", "");
                 ulong startAddress = ulong.Parse(address, NumberStyles.HexNumber);
-                for (int i = 0; i < BreakPoint.Config.ByteCount; i++)
+                addresses.Add(startAddress.ToString());
+                for (int i = 1; i < BreakPoint.Config.ByteCount; i++)
                 {
                     addresses.Add(startAddress.ToString());
                     startAddress = startAddress + 1;
