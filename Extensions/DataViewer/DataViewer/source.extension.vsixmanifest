@@ -2,10 +2,12 @@
 <Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
   <Identifier Id="5d6fcbe4-d4be-494f-baaf-a73ee54ef81a">
     <Name>DataViewer</Name>
-    <Author>Company</Author>
+    <Author>Atmel</Author>
     <Version>1.0</Version>
-    <Description xml:space="preserve">Provides way to watch the changes in the variables or Registers in a graphical manner while debugging. Supports bit wise live watch also.</Description>
+    <Description xml:space="preserve">Provides way to watch the changes in the variables or Registers or bit of the registers in a graphical manner while debugging.</Description>
     <Locale>1033</Locale>
+    <Icon>dataviewer.png</Icon>
+    <PreviewImage>digital.png</PreviewImage>
     <InstalledByMsi>false</InstalledByMsi>
     <SupportedProducts>
       <IsolatedShell Version="6.1">AtmelStudio</IsolatedShell>
